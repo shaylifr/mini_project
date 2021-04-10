@@ -2,7 +2,7 @@
 #include <vector>
 #include<time.h>
 #include<windows.h>
-using namespace std;////zamine aval
+using namespace std;////zamine 2
 
 vector<char>  buildBoard() {
 
