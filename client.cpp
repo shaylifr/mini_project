@@ -1,7 +1,21 @@
 #include <iostream>
 #include <boost/asio.hpp>
 #include <thread>
+#ifdef _WIN32
+#include <windows.h>
 
+void sleep(unsigned milliseconds)
+{
+    Sleep(milliseconds);
+}
+#else
+#include <unistd.h>
+
+void sleep(unsigned milliseconds)
+{
+    usleep(milliseconds * 1000); // takes microseconds
+}
+#endif
 #define BOARD_SIZE 21
 #define TIMER_SECS 20
 
@@ -82,6 +96,7 @@ static io_service io;
 static tcp::socket sock(io);
 static int fieldNumber;
 static bool loop;
+static bool halghe;
 vector<vector<char> > buildBoard1(int BOARD_SIZE1) {
 
     vector<vector<char> > board1;
@@ -198,7 +213,7 @@ vector<char>  buildBoard2() {
 
 void printBoard2(vector<char>* board2) {
     cout << endl << endl;
-    cout << "13(" << (*board)[13] << ")---------14(" << (*board)[14] << ")--------15(" << (*board)[15] << ")" << endl
+    cout << "13(" << (*board2)[13] << ")---------14(" << (*board2)[14] << ")--------15(" << (*board2)[15] << ")" << endl
         << "   |             |            |" << endl
         << "   |             |            |" << endl
         << "   |   10(" << (*board2)[10] << ")--11(" << (*board2)[11] << ")--12(" << (*board2)[12] << ")    |" << endl
@@ -256,14 +271,35 @@ int main()
         read_until(sock, buff, "\n");
         text = buffer_cast<const char*>(buff.data());
         text = text.substr(0, text.length() - 1);
-
+        /*if (text == "          Main menu") {
+            cout << text;
+            continue;
+        }*/
 
         if (text == "Which Field You Wanna Play?")
         {
             cout << text << " ";
             cout << "Number between 1 and 3" << endl;
             cout << ":-";
-
+           
+            printBoard1(&board1, BOARD_SIZE1);
+            cout << endl<<endl;
+            cout << "      (1)" << endl;
+            sleep(5000);
+            system("cls");
+            
+            
+            printBoard2((&board2));
+            cout << endl << endl;
+            cout << "               (2)" << endl;
+            sleep(5000);
+            system("cls");
+            
+            updateBoard3();
+            cout << endl << endl;
+            cout << "                          (3)" << endl;
+            sleep(5000);
+            system("cls");
             int ans;
             do
             {
@@ -327,7 +363,7 @@ int main()
     }
 
     loop = true;
-
+    halghe = true;
     thread t1(timer);
     thread t2(receiveFrom);
     thread t3(startGame);
@@ -418,6 +454,12 @@ void processCommand(string text)
     {
         cout << "---------You Lost----------" << endl;
         loop = false;
+    }
+    else if (text == "NO")
+    {
+        cout << "---------NO WINNER----------" << endl;
+        loop = false;
+       /// exit(0);
     }
     else if (isNumber(text))
     {
@@ -604,7 +646,7 @@ void startGame()
         // int shouldGameContinue = 0;
          //int playerSwitch = 1;
 
-         // cout << "Hello! Welcome to Tic Tac Toe!" << endl;//
+          cout << "Hello! Welcome to Tic Tac Toe!" << endl;
         cout << "name of board:tic tac toe " << endl;
         cout << "size of board:" << BOARD_SIZE1 << endl;
         if (BOARD_SIZE1 == 3)
@@ -613,16 +655,16 @@ void startGame()
             cout << "number of plots:4" << endl;
         else if (BOARD_SIZE1 >= 5)
             cout << "number of plots:5" << endl;
-
+        sleep(7000);
         while (loop)
         {
 
             if (printWait)
             {
-                //updateBoard3();
+               
+
                 system("cls");
-                // printBoard2((&board2));
-                // printBoard1int(&board1int, BOARD_SIZE1);
+               
                 printBoard1(&board1, BOARD_SIZE1);
                 cout << endl;
                 cout << "You = " << yourCharacter << "\t";
@@ -637,10 +679,13 @@ void startGame()
 
                 cout << "Enter \'0\' to exit" << endl;
                 cout << "You Have " << TIMER_SECS << " seconds to move" << endl;
+                //int a = 19;
                 timerStarts = true;
+                //cout << "20"<<endl;
+                
 
-                //getUserInput3();
-                turn1(&board1, BOARD_SIZE1);
+                    turn1(&board1, BOARD_SIZE1);
+                  
                 //system("cls");
 
                 printWait = true;
@@ -664,16 +709,18 @@ void startGame()
         //int bead;
         int shouldGameContinue = 0;
         //int playerSwitch = 1;
-
+        cout << "Hello! Welcome to six men's morris!" << endl;
         cout << "name of board:six men's morris" << endl;
         cout << "size of board:3" << endl;
         cout << "number of plots:3" << endl;
+        sleep(4000);
         while (loop)
         {
 
             if (printWait)
             {
                 //updateBoard3();
+                
                 system("cls");
                 printBoard2((&board2));
                 cout << endl;
@@ -691,6 +738,7 @@ void startGame()
 
                 //getUserInput3();
                 turn((&board2));
+               // if(difftime(t1,))
                 printWait = true;
 
             }
@@ -757,9 +805,39 @@ void timer()
         if (timerStarts)
         {
             time_t t1 = time(NULL);
+            time_t t2 = t1;
+            int counter = 20;
             while (timerStarts)
             {
+               /* while (a != 1) {
+                    if (difftime(time(NULL), t2) == 1) {
+                        cout << endl << a;
+                        a--;
+                        time_t t2 = time(NULL);
+                    }
+                }*/
+                Sleep(1000);
+                while (counter >= 1&&halghe)
+                {
+                    cout << "Time remaining: " << counter << flush;
+                    Sleep(1000);
+                    system("cls");
+                    printBoard1(&board1, BOARD_SIZE1);
+                    counter--;
+                }
+                int counter = 20;
                 this_thread::sleep_for(std::chrono::microseconds(500000));
+               // time_t t1 = time(NULL);
+                
+                    //turn1(&board1, BOARD_SIZE1);
+                    /*if (difftime(time(NULL), t2) == 1)
+                        cout << endl<<a;
+                    
+                    a--;
+                    time_t t2 = time(NULL);*/
+                   // system("cls");
+                    //printBoard1(&board1, BOARD_SIZE1);
+                
                 if (difftime(time(NULL), t1) >= TIMER_SECS)
                 {
                     sendTo("left\n");
@@ -767,6 +845,7 @@ void timer()
                     loop = false;
                     exit(0);
                 }
+               // cout << "\r";
             }
         }
 
@@ -784,6 +863,7 @@ void getUserInput3()
     {
         if (cin >> ans)
         {
+            halghe = false;
             if (ans >= 0 && ans <= 21)
             {
                 if (ans == 0)
@@ -834,21 +914,7 @@ bool winConditionMet(vector<char>* board2) {
 
 
 
-    // Check if there is no winner
-
-    int countAllGone = 0;
-    for (int i = 0; i < 16; i++) {
-
-        if ((*board2)[i] != ' ')
-
-        {
-            countAllGone++;
-        }
-    }
-    if (countAllGone == 16) {
-        cout << "NO WINNER!" << endl;
-        exit(0);
-    }
+    
     else
         return false;
     //return 0;
@@ -991,12 +1057,11 @@ void turn(vector<char>* board2) {
     bool validInput = false;
 
 
-    // cout << "PLAYER 1 TURN!" << endl;////
-
+   
     while (!validInput) {
         cout << "Type the number of your position:)" << endl;
         cin >> Input;
-
+        halghe = false;
         if ((*board2)[Input] == 'O' ||
             (*board2)[Input] == 'X' ||
             Input > 15 ||
@@ -1010,12 +1075,31 @@ void turn(vector<char>* board2) {
     (*board2)[Input] = yourCharacter;
     //  else
      //     (*board2)[xInput - 1][yInput - 1] = 'o';
+    // Check if there is no winner
+
+   
     if (winConditionMet(board2))
     {
         loop = false;
         cout << "---------You Won----------" << endl;
         sendTo("winner\n");
         loop = false;
+    }
+    int countAllGone = 0;
+    for (int i = 0; i < 16; i++) {
+
+        if ((*board2)[i] != ' ')
+
+        {
+            countAllGone++;
+        }
+    }
+    if (countAllGone == 16) {
+        loop = false;
+        cout << "---------NO WINNER!----------" << endl;
+        sendTo("NO\n");
+        loop = false;
+
     }
     else
     {
@@ -1036,9 +1120,9 @@ void turn1(vector<vector<char> >* board1, int BOARD_SIZE1) {
     int yInput = 0;
 
     while (!validInput) {
-        cout << "Type in Coordinates ex (1,2) to place an X on that spot!" << endl;
+        cout << "Type in Coordinates ex (1,2) to place an X on that spot!" << endl<<endl;
         cin >> input;
-
+        halghe = false;
         xInput = (int)input[1] - 48;//char ro be adad convert konim:)
         yInput = (int)input[3] - 48;
 
