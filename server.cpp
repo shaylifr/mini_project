@@ -45,7 +45,7 @@ void processAndRespond(tcp::socket& sock, string& text)
 
     if (isNumber(text))
     {
-        // cout << "h";
+       // cout << "h";
         sendTo(sock, text + "\n");
     }
     else if (text[1] == '^') {
@@ -73,6 +73,11 @@ void processAndRespond(tcp::socket& sock, string& text)
     else if (text == "winner")
     {
         sendTo(sock, "Lost\n");
+        this_thread::sleep_for(std::chrono::microseconds(500000));
+    }
+    else if (text == "NO")
+    {
+        sendTo(sock, "NO\n");
         this_thread::sleep_for(std::chrono::microseconds(500000));
     }
     else if (text == "loser")
@@ -142,6 +147,7 @@ int main()
     sendTo(client_sock2, "Starting Game...\n");
 
     //Get The Field To Play Game from first Client
+   /* sendTo(client_sock1, "          Main menu\n");*/
     sendTo(client_sock1, "Which Field You Wanna Play?\n");
 
     boost::asio::streambuf buff;
