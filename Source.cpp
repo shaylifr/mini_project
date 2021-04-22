@@ -6,6 +6,8 @@
 #define BOARD_SIZE 29
 
 
+#define CLEAR_SCREEN system("cls")
+
 const char board[][100] = {
                       {"                                                                            "},
                       {"           1                                                                "},
@@ -42,8 +44,7 @@ static const int boardCol = sizeof(*board) / sizeof(**board);
 
 static int BOARD[BOARD_SIZE] = { 0 };
 static int Winner = 0;
-static bool firstP = true; 
-
+static bool firstP = true;
 
 void updateBoard();
 
@@ -113,7 +114,7 @@ int main()
 void updateBoard()
 {
 
-    system("cls");
+    CLEAR_SCREEN;
 
     //Part 2
     int X = 10;
@@ -163,12 +164,6 @@ void updateBoard()
 
 
 
-
-
-
-
-
-
 bool checkForWinning()
 {
 
@@ -209,7 +204,7 @@ bool checkForWinning()
         Winner = p[0];
         return true;
     }
-    
+
     if (p[4] != 0 && p[4] == p[5] && p[4] == p[6])
     {
         Winner = p[4];
@@ -228,6 +223,7 @@ bool checkForWinning()
         Winner = p[6];
         return true;
     }
+
 
     if (p[7] != 0 && p[7] == p[8] && p[7] == p[9])
     {
@@ -248,13 +244,14 @@ bool checkForWinning()
         Winner = p[10];
         return true;
     }
-    
+
+
     if (p[12] != 0 && p[12] == p[20] && p[12] == p[27])
     {
         Winner = p[12];
         return true;
     }
-    
+
     if (p[13] != 0 && p[13] == p[14] && p[13] == p[15])
     {
         Winner = p[13];
@@ -331,4 +328,6 @@ bool setPlace(int place, int p)
     BOARD[place - 1] = p;
     return true;
 }
+
+
 
